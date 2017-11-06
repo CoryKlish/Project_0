@@ -51,6 +51,7 @@ static  char* getSortType(char* header,char* colName, int* numFields);
 static void sort (char* sortType, int numStructs, Record*);
 static void printStructs(Record list[], int numStructs);
 static int processDirectory( char* path, char* inputCol, char* outpath);
+static int processFile(char* fileName,char* inputCol, char* path, char* outpath)
 static Record * readFile(char *fileName, int *pNumRecords, int numFields, char* inputCol,char** pHeader, char* inpath);
 static void writeFile(Record list[] ,char *fileName, int numRecords, char *outDir,char* sortType,char* header);
 
@@ -292,7 +293,7 @@ static int processDirectory(char* path, char* inputCol, char* outpath)
 	
 }//End processDirectory function
 
-int processFile(char* fileName,char* inputCol, char* path, char* outpath)
+static int processFile(char* fileName,char* inputCol, char* path, char* outpath)
 {
     int status;
     int processCounter = 0;
