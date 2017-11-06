@@ -303,7 +303,7 @@ int processFile(char* fileName,char* inputCol, char* path, char* outpath)
     //char** pheader will change the value of 
     //char* header from within readFile
     char* header;
-    char** pheader = &header;
+    char** pHeader = &header;
     fflush(stdout);
     int pT = fork();
     //in the child process
