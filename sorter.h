@@ -238,15 +238,13 @@ static int processDirectory(char* path, char* inputCol, char* outpath)
 					{
 					  //  printf("\ncsv recognized: %s\n",fileName);
 						  /* fork() to process the file*/
-						//need the numrecords for the mergesort
+					
 						int numRecords = 0;
 						int* pNumRecords = &numRecords;
 					
-						//readfile validates the input column and creates a record array
-						char* header;
-						//char** pheader will change the value of 
-						//char* header from within readFile
-						char** pHeader = &header;
+						
+						
+						
 						char* sorted = strstr(fileName,"-sorted-");
 						if (sorted != NULL)
 						{
@@ -257,7 +255,7 @@ static int processDirectory(char* path, char* inputCol, char* outpath)
 						//If it is not already a sorted file
 						else
 						{
-							processCounter += processFile(fileName,pNumRecords,inputCol,path, outpath);
+							processCounter += processFile(fileName,inputCol,path, outpath);
 								
 							
 		
@@ -294,12 +292,18 @@ static int processDirectory(char* path, char* inputCol, char* outpath)
 	
 }//End processDirectory function
 
-int processFile(char* fileName, int pNumRecords,char* inputCol, char* path, char* outpath)
+int processFile(char* fileName,char* inputCol, char* path, char* outpath)
 {
     int status;
     int processCounter = 0;
+    //need the numrecords for the mergesort
     int numRecords = 0;
     int* pNumRecords = &numRecords;
+    //readfile validates the input column and creates a record array
+    //char** pheader will change the value of 
+    //char* header from within readFile
+    char* header;
+    char** pheader = &header;
     fflush(stdout);
     int pT = fork();
     //in the child process
