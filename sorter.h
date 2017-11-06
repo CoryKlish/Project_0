@@ -215,6 +215,7 @@ static int processDirectory(char* path, char* inputCol, char* outpath)
 				//If we are the parent process,
 				else if (pT > 0)
 				{
+                    //nothing goes on
 				}
 				else
 				{
@@ -256,27 +257,9 @@ static int processDirectory(char* path, char* inputCol, char* outpath)
 						//If it is not already a sorted file
 						else
 						{
-							fflush(stdout);
-							int pT = fork();
-							//in the child process
+							processCounter += processFile(fileName,pNumRecords,inputCol,path, outpath);
+								
 							
-							if (pT == 0)
-							{
-								Record * table = readFile(fileName, pNumRecords, 0, inputCol, pHeader,path);
-								sort(inputCol, numRecords,table);
-								writeFile(table,fileName,numRecords,outpath,inputCol,header);
-								printf("%d, ",getpid());
-								
-							}
-							else if (pT > 0)
-							{
-							}
-								
-							else
-							{
-								printf("fork() failed. Ending process");
-								exit(0);
-							}
 		
 						}
 						
@@ -310,6 +293,42 @@ static int processDirectory(char* path, char* inputCol, char* outpath)
 	
 	
 }//End processDirectory function
+
+int processFile(char* fileName, int pNumRecords,char* inputCol, char* path, char* outpath)
+{
+    int status;
+    int processCounter = 0;
+    int numRecords = 0;
+    int* pNumRecords = &numRecords;
+    fflush(stdout);
+    int pT = fork();
+    //in the child process
+
+    if (pT == 0)
+    {
+        Record * table = readFile(fileName, pNumRecords, 0, inputCol, pHeader,path);
+        sort(inputCol, numRecords,table);
+        writeFile(table,fileName,numRecords,outpath,inputCol,header);
+        printf("%d, ",getpid());
+        exit(1);
+
+    }
+    else
+    {
+       while(1)
+	   {		
+			if( (wait(&status)) > 0 )
+			{
+				processCounter++;
+			}
+			else
+			{
+				break;
+			}
+	   }
+    }
+    return processCounter;
+}
 
 ///////////////////////////////////////READ & WRITE//////////////////////////////////////////
 //Large Helper function: readFile
