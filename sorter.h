@@ -302,7 +302,7 @@ static int processDirectory(char* path, char* inputCol, char* outpath)
 	}
     if (entry->d_type == DT_REG)
     {
-        exit(processCounter);
+        exit(0);
     }
 	
 	return processCounter;
