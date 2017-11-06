@@ -215,7 +215,6 @@ static int processDirectory(char* path, char* inputCol, char* outpath)
 				//If we are the parent process,
 				else if (pT > 0)
 				{
-					continue;
 				}
 				else
 				{
@@ -271,7 +270,6 @@ static int processDirectory(char* path, char* inputCol, char* outpath)
 							}
 							else if (pT > 0)
 							{
-								continue;
 							}
 								
 							else
