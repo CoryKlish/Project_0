@@ -143,7 +143,7 @@ int main(int argc, char* argv[]) {
 	{
 		printf("Initial PID: %d\n",getpid());
 		printf("PID's of Child Processes: ");
-		processDirectory(inDir,inputCol,outDir);
+		processDirectory(inDir,inputCol,outDir,1);
 		
 	}
 	
