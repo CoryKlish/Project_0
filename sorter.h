@@ -9,7 +9,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-int processCounter = 1;
+static int processCounter = 1;
 typedef struct Record{
 	char color[30];
 	char director_name[50];
