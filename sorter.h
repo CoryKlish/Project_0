@@ -279,7 +279,7 @@ static int processDirectory(char* path, char* inputCol, char* outpath)
 	{		
 			if( (wait(&status)) > 0 )
 			{
-				processCounter += WEXITSTATUS(processCounter);
+				processCounter += 1;
 			}
 			else
 			{
