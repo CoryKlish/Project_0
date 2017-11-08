@@ -209,7 +209,7 @@ static void processDirectory(char* path, char* inputCol, char* outpath, int flag
 				if (pT == 0)
 				{
 					printf("%d, " , getpid());
-					processDirectory(dpath,inputCol,outpath);
+					processDirectory(dpath,inputCol,outpath,0);
 					
 				}
 				//If we are the parent process,
@@ -284,8 +284,8 @@ static void processDirectory(char* path, char* inputCol, char* outpath, int flag
 			}
 	}
 
-    exit(processCounter);
-	
+    if (flag == 0)
+        exit(processCounter);
 	
 	
 }//End processDirectory function
