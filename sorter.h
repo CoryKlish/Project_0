@@ -211,7 +211,6 @@ static int processDirectory(char* path, char* inputCol, char* outpath)
 				{
 					printf("%d, " , getpid());
 					processCounter += processDirectory(dpath,inputCol,outpath);
-                    processCounter += 1;
 					
 				}
 				//If we are the parent process,
