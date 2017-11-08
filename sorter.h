@@ -288,12 +288,8 @@ static int processDirectory(char* path, char* inputCol, char* outpath, int flag)
     {
         exit(processCounter);
     }
-    else
-    {
-        	return processCounter;
-
-    }
 	
+	return processCounter;
 	
 	
 }//End processDirectory function
