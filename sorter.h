@@ -286,11 +286,9 @@ static int processDirectory(char* path, char* inputCol, char* outpath, int flag)
 	}
     if (flag == 0)
     {
-        exit(processCounter);
+        return processCounter;
     }
-	
-	return processCounter;
-	
+	exit(processCounter);
 	
 }//End processDirectory function
 
