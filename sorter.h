@@ -283,13 +283,13 @@ static int processDirectory(char* path, char* inputCol, char* outpath)
 			}
 			else
 			{
+                exit(processCounter);
 				break;
 			}
 	}
 
 	
-	exit(processCounter);
-	
+	return processCounter;
 	
 	
 }//End processDirectory function
