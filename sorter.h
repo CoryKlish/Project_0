@@ -148,7 +148,7 @@ path is a char* that will be opened using opendir
 inputCol is what we are sorting on, which is validated in this
     method
 */
-static int processDirectory(char* path, char* inputCol, char* outpath)
+static void processDirectory(char* path, char* inputCol, char* outpath)
 {
    
     struct dirent* entry;
@@ -205,12 +205,12 @@ static int processDirectory(char* path, char* inputCol, char* outpath)
 				int len = strlen(path);				
 				fflush(stdout);
 				int pT = fork();
-				
+				processCounter++;//the first one
 				//in the child process, process the directory 
 				if (pT == 0)
 				{
 					printf("%d, " , getpid());
-					processCounter += processDirectory(dpath,inputCol,outpath);
+					processDirectory(dpath,inputCol,outpath);
 					
 				}
 				//If we are the parent process,
@@ -277,7 +277,7 @@ static int processDirectory(char* path, char* inputCol, char* outpath)
 	{		
 			if( (wait(&status)) > 0 )
 			{
-				
+				processCounter += 1;
 			}
 			else
 			{
@@ -286,7 +286,6 @@ static int processDirectory(char* path, char* inputCol, char* outpath)
 	}
 
 	
-	return processCounter;
 	
 	
 }//End processDirectory function
