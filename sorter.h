@@ -288,7 +288,7 @@ static int processDirectory(char* path, char* inputCol, char* outpath)
 	}
 
 	
-	return processCounter;
+	exit(processCounter);
 	
 	
 	
