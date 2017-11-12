@@ -10,6 +10,8 @@
 #include <sys/types.h>
 
 static int processCounter = 1;
+static int initpid;
+
 typedef struct Record{
 	char color[30];
 	char director_name[50];
@@ -50,8 +52,8 @@ static void allocateToken(Record*, char*, int);
 static  char* getSortType(char* header,char* colName, int* numFields);
 static void sort (char* sortType, int numStructs, Record*);
 static void printStructs(Record list[], int numStructs);
-static void processDirectory( char* path, char* inputCol, char* outpath,int flag);
-static int processFile(char* fileName,char* inputCol, char* path, char* outpath);
+static int processDirectory( char* path, char* inputCol, char* outpath,int flag);
+static void processFile(char* fileName,char* inputCol, char* path, char* outpath);
 static Record * readFile(char *fileName, int *pNumRecords, int numFields, char* inputCol,char** pHeader, char* inpath);
 static void writeFile(Record list[] ,char *fileName, int numRecords, char *outDir,char* sortType,char* header);
 
@@ -148,20 +150,18 @@ path is a char* that will be opened using opendir
 inputCol is what we are sorting on, which is validated in this
     method
 */
-static void processDirectory(char* path, char* inputCol, char* outpath, int flag)
+static int processDirectory(char* path, char* inputCol, char* outpath, int flag)
 {
    
     struct dirent* entry;
     char* csv = ".csv";
     int len = strlen(path);
     int status = 0;
-    int totalCounter = 0;
-    
     
     DIR* directory  = opendir(path);
     //read from directory until nothing left
     
-    while ((entry =  readdir(directory)) != NULL )
+    while ((entry = readdir(directory)) != NULL )
     {
 		if ((strcmp (entry->d_name,"."))!= 0 && (strcmp (entry->d_name,"..")) != 0 && (strcmp (entry->d_name,".git")) != 0)
 		{
@@ -204,19 +204,19 @@ static void processDirectory(char* path, char* inputCol, char* outpath, int flag
 				int len = strlen(path);				
 				fflush(stdout);
 				int pT = fork();
-				processCounter++;//the first one
+				
 				//in the child process, process the directory 
 				if (pT == 0)
 				{
+                    processCounter = 1;
+                    
 					printf("%d, " , getpid());
-					processDirectory(dpath,inputCol,outpath,0);
-					
+				    processDirectory(dpath,inputCol,outpath,0);
 				}
 				//If we are the parent process,
 				else if (pT > 0)
 				{
-                    
-
+					
                     //nothing goes on
 				}
 				else
@@ -243,24 +243,19 @@ static void processDirectory(char* path, char* inputCol, char* outpath, int flag
 					
 						int numRecords = 0;
 						int* pNumRecords = &numRecords;
-					
-						
-						
 						
 						char* sorted = strstr(fileName,"-sorted-");
 						if (sorted != NULL)
 						{
 						   // printf("ignored\n");
-							continue;
+						   continue;
 						}
 						
 						//If it is not already a sorted file
 						else
 						{
-							processCounter += processFile(fileName,inputCol,path, outpath);
-								
-							
-		
+							processFile(fileName,inputCol,path, outpath);
+                            
 						}
 						
 
@@ -272,28 +267,46 @@ static void processDirectory(char* path, char* inputCol, char* outpath, int flag
         }//end if
     }//end whileloop for readdir
 	
-	while(1)
-	{		
-			if( (wait(&status)) > 0 )
+	
+	//////////////////////////////////////////////////////////BASE CASE NEEDS WORK MAYBE?/////////////////////////////////////
+	if((entry = readdir(directory)) == NULL)
+	{
+		while(1)
+	   {		
+			if( (wait(&status)) > -1 )
 			{
-				processCounter += 1;
+                if (WIFEXITED(status))
+                {
+                    
+                    processCounter+= WEXITSTATUS(status);
+                }
+              
 			}
 			else
 			{
 				break;
 			}
+	   }
 	}
+	
+	
+    if ((getpid() == initpid))
+    {
+         return processCounter;
 
-    if (flag == 0)
-        exit(processCounter);
+    }
+    else
+    {
+        exit (processCounter);
+    }
+
 	
 	
 }//End processDirectory function
 
-static int processFile(char* fileName,char* inputCol, char* path, char* outpath)
+static void processFile(char* fileName,char* inputCol, char* path, char* outpath)
 {
     int status;
-    int processCounter = 0;
     //need the numrecords for the mergesort
     int numRecords = 0;
     int* pNumRecords = &numRecords;
@@ -312,24 +325,13 @@ static int processFile(char* fileName,char* inputCol, char* path, char* outpath)
         sort(inputCol, numRecords,table);
         writeFile(table,fileName,numRecords,outpath,inputCol,header);
         printf("%d, ",getpid());
-        exit(1);
+        processCounter = 1;
 
+       exit(processCounter); 
     }
-    else
-    {
-       while(1)
-	   {		
-			if( (wait(&status)) > 0 )
-			{
-				processCounter++;
-			}
-			else
-			{
-				break;
-			}
-	   }
-    }
-    return processCounter;
+  
+
+   
 }
 
 ///////////////////////////////////////READ & WRITE//////////////////////////////////////////
