@@ -156,9 +156,7 @@ Record* createTable(int* pNumRecords, int numFields, FILE *fp)
 		}//end if bytes != -1
 		
 	//get next line, move pointer of records over
-		if(fp == NULL){
-			bytes = getline(&line, &recordsize, stdin);
-		}
+
 		else
 		{
 			bytes = getline(&line, &recordsize, fp);
